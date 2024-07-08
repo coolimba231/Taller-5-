@@ -1,0 +1,141 @@
+@startuml
+
+left to right direction
+
+class Usuario {
+    - rut: String
+    - nombre: String
+    - monto: int
+    - contraseña: String
+    + UsuarioBuilder
+    + getRut()
+    + getNombre()
+    + getMonto()
+    + getContraseña()
+    + setRut(String)
+    + setNombre(String)
+    + setMonto(int)
+    + setContraseña(String)
+}
+
+class Transferencias {
+    - rutRemitente: String
+    - rutDestinatario: String
+    - monto: int
+    - mensaje: String
+    + TransferenciasBuilder
+    + getRutRemitente()
+    + getRutDestinatario()
+    + getMonto()
+    + getMensaje()
+}
+
+class LecturaArchivos {
+    - instancia: LecturaArchivos
+    + obtenerInstancia()
+    + leerArchivoTransferencias(ArrayList<Transferencias>)
+    + leerArchivoUsuarios(ArrayList<Usuario>)
+}
+
+interface Observer {
+    + update(String)
+}
+
+interface Sistema {
+    + MainFrame()
+}
+
+class SistemaImpl {
+    + MainFrame()
+}
+
+interface Subject {
+    + addObserver(Observer)
+    + removeObserver(Observer)
+    + notifyObservers(String)
+}
+
+class TransferenciaManager {
+    - instance: TransferenciaManager
+    - observers: List<Observer>
+    + getInstance()
+    + addObserver(Observer)
+    + removeObserver(Observer)
+    + notifyObservers(String)
+    + realizarTransferencia(Usuario, Usuario, int, String)
+}
+
+class MainFrame {
+    - tfRut: JTextField
+    - btnIs: JButton
+    - btnCp: JButton
+    - tfContraseña: JPasswordField
+    - mainPanel: JPanel
+    - loggedInUserRut: String
+    + MainFrame()
+    + ingresar(ArrayList<Usuario>)
+    + close()
+}
+
+class MenuPrincipal {
+    - realizarTransferenciaButton: JButton
+    - visualizarMisTransferenciasButton: JButton
+    - cerrarSesionButton: JButton
+    - menu: JPanel
+    - loggedInUserRut: String
+    + MenuPrincipal(String)
+}
+
+class RealizarTransferencia {
+    - realizarTransferencia: JPanel
+    - Depositar: JButton
+    - volverButton: JButton
+    - campoRUT: JTextField
+    - campoApodo: JTextField
+    - campoMonto: JTextField
+    - campoMensaje: JTextField
+    - rutRemitente: String
+    - transferenciaManager: TransferenciaManager
+    + RealizarTransferencia(String)
+    + deposito(ArrayList<Usuario>)
+}
+
+class VisualizarTransferencia {
+    - ultimosMovimientos: JPanel
+    - volverButton: JButton
+    - textArea1: JTextArea
+    - loggedInUserRut: String
+    - transferenciaManager: TransferenciaManager
+    + VisualizarTransferencia(String)
+    + cargarTransferencias()
+}
+Usuario "1" -- "*" Transferencias : realiza >
+Usuario "1" -- "*" Transferencias : recibe >
+
+Transferencias --> TransferenciasBuilder: contiene
+Usuario --> UsuarioBuilder: contiene
+
+LecturaArchivos "1" -- "*" Transferencias : lee >
+LecturaArchivos "1" -- "*" Usuario : lee >
+
+SistemaImpl --> MainFrame: implementa
+SistemaImpl --> Sistema: implementa
+
+TransferenciaManager "1" o-- "*" Observer
+TransferenciaManager --> Subject
+
+MainFrame ..> LecturaArchivos : usa >
+
+MenuPrincipal --> LecturaArchivos: usa
+MenuPrincipal --> RealizarTransferencia: contiene
+MenuPrincipal --> VisualizarTransferencia: contiene
+
+RealizarTransferencia ..> LecturaArchivos : usa >
+RealizarTransferencia --> TransferenciaManager : usa >
+RealizarTransferencia --> Usuario: usa
+
+VisualizarTransferencia --> Observer
+VisualizarTransferencia ..> LecturaArchivos : usa >
+VisualizarTransferencia --> TransferenciaManager : usa >
+
+@enduml

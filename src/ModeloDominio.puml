@@ -1,0 +1,31 @@
+@startuml Modelo de Dominio
+
+skinparam classAttributeIconSize 0
+
+Entity Usuario {
+  rut
+  nombre
+  monto
+  contraseña
+}
+
+Entity Transferencia {
+  rutRemitente
+  rutDestinatario
+  monto
+  mensaje
+}
+
+Entity Sistema {
+}
+
+Entity TransferenciaManager {
+}
+
+Usuario "1" -- "*" Transferencia : realiza >
+Usuario "1" -- "*" Transferencia : recibe >
+Sistema "1" -- "*" Usuario : gestiona >
+Sistema "1" -- "*" Transferencia : gestiona >
+TransferenciaManager "1" -- "*" Transferencia : administra >
+
+@enduml
